@@ -5,14 +5,15 @@
 __pycache__/
 *.pyc
 
-# Ignore LaTeX auxiliary files
-*.aux
-*.log
-*.toc
-*.out
-*.synctex.gz
+# Ignore LaTeX auxiliary files within APMA6100
+APMA6100/**/*.aux
+APMA6100/**/*.log
+APMA6100/**/*.out
+APMA6100/**/*.synctex.gz
 
 # Ignore specific folders
+APMA6100 (Experiments)/
 Latex/
-Summary (test)/
 Learn Python/
+Summary (test)/
+
