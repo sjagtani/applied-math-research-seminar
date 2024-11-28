@@ -17,3 +17,9 @@ Latex/
 Learn Python/
 Summary (test)/
 
+# Ignore LaTeX auxiliary files
+*.aux
+*.log
+*.out
+*.synctex.gz
+
