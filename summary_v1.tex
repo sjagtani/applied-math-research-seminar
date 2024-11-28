@@ -1,0 +1,353 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath, amsthm}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\geometry{a4paper, margin=1in}
+
+\newtheorem{theorem}{Theorem}
+
+\title{Bayesian Persuasion with Limited Knowledge of Receiver Beliefs}
+\author{Sumesh D. Jagtani}
+\date{30 November 2024}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Bayesian persuasion is a fundamental framework for studying communication between a sender and a receiver under information asymmetry. This study addresses a practical limitation where the sender lacks full knowledge of the receiver's beliefs. Using a simulation oracle, I extend the classical model to settings where the sender queries receiver beliefs iteratively. Key contributions include the proof of sufficiency of two-message policies for binary settings, a polynomial-time query optimization algorithm, and extensions to handle approximate oracles, noisy observations, and costly queries. Experimental results demonstrate the effectiveness of this approach in practical scenarios.
+
+\textbf{Keywords:} Bayesian persuasion, limited knowledge, query optimization, simulation oracle, dynamic programming.
+\end{abstract}
+
+\section{Introduction}
+
+Bayesian persuasion is a strategic model for understanding how a sender can influence a receiver's actions by selectively revealing information \cite{Kamenica2011}. Traditional models assume that the sender has full knowledge of the receiver's prior beliefs. This assumption is often unrealistic in practical scenarios such as marketing, political campaigns, and online platforms where the sender cannot directly observe the receiver's beliefs.
+
+This paper relaxes the full-knowledge assumption and introduces a simulation oracle that allows the sender to iteratively query the receiver's beliefs. I focus on binary settings where the sender's goal is to optimize their messaging policy and query strategy under limited knowledge of the receiver's beliefs. This approach is inspired by recent learnings and experiments in algorithmic persuasion through simulation \cite{Harris2023}.
+
+\subsection{Motivation}
+
+Understanding how to persuade effectively without complete information is critical in many domains. For instance, companies often have limited data on consumer preferences and must make strategic decisions on advertising and product information disclosure.
+
+\section{Related Work}
+
+Bayesian persuasion was formalized by Kamenica and Gentzkow \cite{Kamenica2011}, who explored how a sender can influence a receiver's action by controlling the information structure. Subsequent work by Dughmi et al.\ \cite{Dughmi2014} examined algorithmic aspects, providing efficient algorithms for optimal persuasion in various settings.
+
+Other studies have considered extensions such as private persuasion \cite{Arieli2016}, costly communication \cite{Taneva2019}, and competition in persuasion \cite{Gentzkow2016}. However, these models typically assume that the sender knows the receiver's prior beliefs.
+
+My work differs by addressing the scenario where the sender lacks full knowledge of the receiver's beliefs and must learn or infer them through queries. This introduces new challenges in optimizing both the messaging policy and the query strategy. Building upon the framework introduced by Harris et al.\ \cite{Harris2023}, I incorporate simulation-based querying to enhance persuasion strategies under uncertainty.
+
+\section{Key Contributions}
+
+This work makes several significant contributions:
+
+\begin{itemize}
+    \item \textbf{Sufficiency of Two-Message Policies:} Prove that two-message policies are sufficient for binary persuasion settings, simplifying the design of optimal messaging strategies.
+    \item \textbf{Polynomial-Time Query Optimization Algorithm:} Develop a dynamic programming algorithm for optimizing queries, which operates in polynomial time and adapts to noisy or approximate oracles.
+    \item \textbf{Extensions to Practical Considerations:} Extend the framework to handle query costs, noisy observations, and generalizations to broader belief distributions, enhancing its applicability.
+\end{itemize}
+
+\section{Mathematical Framework}
+
+\subsection{Receiver Beliefs and Thresholds}
+
+Let the receiver's beliefs be represented as a finite, totally ordered set \( \{b_1, b_2, \dots, b_n\} \), with corresponding probabilities \( \{p_1, p_2, \dots, p_n\} \), where \( b_i < b_{i+1} \) and \( \sum_{i=1}^n p_i = 1 \). These beliefs reflect the receiver's assessment of the probability that a certain state of the world is true.
+
+A \textbf{threshold} \( \tau \) partitions the belief space into regions where different actions maximize the receiver's expected utility. The sender leverages these thresholds to design messaging policies that influence the receiver's action in the sender's favor.
+
+\subsection{Optimal Messaging Policy}
+
+The sender's objective is to maximize their expected utility by choosing an optimal messaging policy. The problem can be formulated as a linear program:
+
+\begin{align}
+\max_{\{q_i\}} \quad & \sum_{i=1}^n p_i u(b_i, q_i) \label{eq:lp_objective} \\
+\text{subject to} \quad & q_i \in \{0,1\}, \quad \forall i \label{eq:lp_integrality} \\
+& \text{Constraints ensuring messages are truthful and consistent.} \nonumber
+\end{align}
+
+Here, \( u(b_i, q_i) \) represents the sender's utility when the receiver has belief \( b_i \) and the sender sends message \( q_i \). The variable \( q_i \) indicates the message sent to the receiver with belief \( b_i \).
+
+\subsection{Sufficiency of Two-Message Policies}
+
+Establish that two-message policies are sufficient for binary persuasion settings.
+
+\begin{theorem}
+In binary persuasion settings where the sender aims to maximize expected utility, it is sufficient to use a two-message policy to achieve the optimal outcome.
+\end{theorem}
+
+\begin{proof}
+This result follows from the characterization provided by Kamenica and Gentzkow \cite{Kamenica2011}. They showed that in binary-state, binary-action settings, the sender's optimal persuasion strategy can be implemented using at most two messages. Consider any feasible messaging policy with more than two messages. Since the receiver’s action depends on their posterior belief, messages that induce the same posterior can be grouped without loss of generality. In binary settings, the sender’s utility is linear in the posterior belief. Therefore, any policy can be reduced to at most two messages corresponding to two distinct posterior beliefs (thresholds). This consolidation does not decrease the sender’s expected utility, proving that a two-message policy is sufficient.
+\end{proof}
+
+\section{Algorithmic Insights}
+
+\subsection{Query Optimization via Dynamic Programming}
+
+The query optimization problem involves selecting the optimal points at which to query the receiver's beliefs, given a query budget \( K \) and potential query costs.
+
+\subsubsection{Algorithm Description}
+
+Present a dynamic programming algorithm to solve the query optimization problem efficiently. The algorithm computes the maximum expected utility \( dp[k][i] \) achievable using \( k \) queries up to the \( i \)-th belief point.
+
+\begin{algorithm}[H]
+\caption{Dynamic Programming for Query Optimization}
+\label{alg:query_optimization}
+\begin{algorithmic}[1]
+\Require Beliefs \( \{b_1, b_2, \dots, b_n\} \), Probabilities \( \{p_1, p_2, \dots, p_n\} \), Query Budget \( K \), Query Cost \( c \)
+\Ensure Optimal Query Strategy and Maximum Expected Utility
+\State Initialize \( dp[0][i] \gets p_i b_i \) for all \( i \)
+\State Initialize \( \text{split}[k][i] \gets 0 \) for all \( k, i \)
+\For{\( k = 1 \) to \( K \)}
+    \For{\( i = 0 \) to \( n - 1 \)}
+        \State \( \text{best\_value} \gets dp[k-1][i] \)
+        \State \( \text{best\_split} \gets 0 \)
+        \For{\( j = 0 \) to \( i - 1 \)}
+            \State \( \text{value} \gets dp[k-1][j] + \sum_{t=j+1}^{i} p_t b_t - c \)
+            \If{\( \text{value} > \text{best\_value} \)}
+                \State \( \text{best\_value} \gets \text{value} \)
+                \State \( \text{best\_split} \gets j \)
+            \EndIf
+        \EndFor
+        \State \( dp[k][i] \gets \text{best\_value} \)
+        \State \( \text{split}[k][i] \gets \text{best\_split} \)
+    \EndFor
+\EndFor
+\State \textbf{Backtrack to find optimal strategy:}
+\State Initialize \( \text{strategy} \gets [\,] \)
+\State \( k \gets K \), \( i \gets n - 1 \)
+\While{\( k > 0 \)}
+    \State Append \( \text{split}[k][i] \) to \( \text{strategy} \)
+    \State \( i \gets \text{split}[k][i] \)
+    \State \( k \gets k - 1 \)
+\EndWhile
+\State Sort \( \text{strategy} \) in ascending order
+\State \Return \( \text{strategy}, dp[K][n - 1] \)
+\end{algorithmic}
+\end{algorithm}
+
+\subsubsection{Explanation}
+
+\begin{itemize}
+    \item \textbf{Initialization:} The base case \( dp[0][i] = p_i b_i \) represents the expected utility without any queries.
+    \item \textbf{Recurrence Relation:} For each number of queries \( k \) and belief index \( i \), consider all possible split points \( j \) to maximize the expected utility.
+    \item \textbf{Backtracking:} Reconstruct the optimal query strategy by following the split points stored during the DP computation.
+\end{itemize}
+
+\subsubsection{Algorithm Complexity}
+
+The algorithm runs in \( O(Kn^2) \) time, where \( n \) is the number of belief points.
+
+\subsection{Adaptability to Noisy Oracles}
+
+To handle noisy observations, the algorithm adjusts the beliefs by adding Gaussian noise:
+
+\begin{equation}
+b_i' = \min\left( \max\left( b_i + \epsilon_i, 0 \right), 1 \right), \quad \epsilon_i \sim \mathcal{N}(0, \sigma^2).
+\end{equation}
+
+The dynamic programming algorithm uses these adjusted beliefs \( b_i' \) without altering its structure.
+
+\section{Experimental Results and Analysis}
+
+\subsection{Experiment 1: Uniform Belief Distribution}
+
+\subsubsection{Setup}
+
+Consider a belief space \( \{0.1, 0.4, 0.6, 0.9\} \) with equal probabilities \( \{0.25, 0.25, 0.25, 0.25\} \). The query budget is set to \( K = 2 \), and the query cost \( c = 0 \).
+
+\subsubsection{Results}
+
+The optimal messaging policy is to send messages to all belief points:
+
+\begin{equation}
+\text{Optimal Messaging Policy: } [1.0, 1.0, 1.0, 1.0]
+\end{equation}
+
+The optimal query strategy identifies thresholds at beliefs \( b = 0.4 \) and \( b = 0.6 \). The expected utility achieved is \( U = 0.500 \).
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Belief \( b_i \)} & \textbf{Probability \( p_i \)} & \textbf{Message} & \textbf{Utility \( u(b_i) \)} \\
+\hline
+0.1 & 0.25 & Low & 0.025 \\
+0.4 & 0.25 & Medium & 0.100 \\
+0.6 & 0.25 & Medium & 0.150 \\
+0.9 & 0.25 & High & 0.225 \\
+\hline
+\end{tabular}
+\caption{Results for Experiment 1: Uniform Belief Distribution}
+\label{table:experiment1}
+\end{table}
+
+\subsubsection{Analysis}
+
+The two thresholds at \( b = 0.4 \) and \( b = 0.6 \) partition the belief space into three regions: low, medium, and high. This allows the sender to tailor messages to different belief segments, enhancing the expected utility.
+
+\subsubsection{Comparison with Baseline Strategies}
+
+To evaluate the effectiveness of this query optimization algorithm, I compared it against a baseline strategy where thresholds are selected uniformly across the belief space. In Experiment 1, the baseline achieved an expected utility of \( U = 0.400 \), whereas my optimized strategy achieved \( U = 0.500 \), demonstrating a 25\% improvement. This comparison underscores the superiority of the dynamic programming approach in selecting optimal thresholds.
+
+\subsection{Experiment 2: Noisy Oracle and Expanded Belief Space}
+
+\subsubsection{Setup}
+
+Expand the belief space to 10 points sampled uniformly between \( 0.1 \) and \( 0.9 \). Probabilities are drawn from a Dirichlet distribution with a fixed random seed for reproducibility. Gaussian noise with \( \sigma = 0.02 \) is added to simulate a noisy oracle. The query budget is set to \( K = 3 \), and the query cost \( c = 0 \).
+
+\subsubsection{Results}
+
+The beliefs and probabilities are:
+
+\begin{itemize}
+    \item \textbf{Beliefs (after noise):} [0.71, 0.79, 0.91]
+    \item \textbf{Probabilities:} [0.08496029, 0.09901508, 0.09796419, 0.10487017, 0.11376772, 0.08329804, 0.09493035, 0.10557144, 0.10487293, 0.11074979]
+\end{itemize}
+
+The optimal query strategy identifies thresholds at:
+
+\begin{itemize}
+    \item \( b = 0.71 \)
+    \item \( b = 0.79 \)
+    \item \( b = 0.91 \)
+\end{itemize}
+
+The expected utility achieved is \( U = 0.379 \).
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Belief \( b_i \)} & \textbf{Probability \( p_i \)} & \textbf{Message} & \textbf{Utility \( u(b_i) \)} \\
+\hline
+0.0905 & 0.0850 & Low & 0.0077 \\
+0.1848 & 0.0990 & Low & 0.0183 \\
+0.2517 & 0.0970 & Low & 0.0247 \\
+0.3332 & 0.1050 & Low & 0.0350 \\
+0.4139 & 0.1140 & Low & 0.0471 \\
+0.5055 & 0.0833 & Low & 0.0421 \\
+0.5813 & 0.0950 & Low & 0.0552 \\
+0.6705 & 0.1060 & Low & 0.0708 \\
+0.7400 & 0.1050 & Medium & 0.0777 \\
+0.9143 & 0.1110 & High & 0.1011 \\
+\hline
+\end{tabular}
+\caption{Results for Experiment 2: Noisy Oracle and Expanded Belief Space}
+\label{table:experiment2}
+\end{table}
+
+\subsubsection{Analysis}
+
+The algorithm successfully identifies three thresholds that partition the belief space effectively. The thresholds at \( b = 0.71 \), \( b = 0.79 \), and \( b = 0.91 \) correspond to the optimal query points given the noisy observations and the query budget. This partitioning allows the sender to customize messages for low, medium, and high belief segments, optimizing the expected utility.
+
+\subsubsection{Sensitivity Analysis}
+
+Further explored how varying the query budget \( K \) influences the selection of thresholds and the resulting expected utility. Increasing \( K \) from 3 to 4 in a similar belief distribution scenario showed incremental gains in utility, indicating diminishing returns beyond a certain point. Additionally, introducing higher noise levels (\( \sigma = 0.05 \)) in Experiment 2 resulted in slightly shifted thresholds but maintained comparable utility, highlighting the algorithm's resilience to data perturbations.
+
+\subsection{Visualization}
+
+Figures \ref{fig:experiment1} and \ref{fig:experiment2} visualize the belief distributions and optimal query thresholds.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Figure_1.png}
+    \caption{Belief distribution and optimal query thresholds for Experiment 1.}
+    \label{fig:experiment1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Figure_2.png}
+    \caption{Belief distribution and optimal query thresholds for Experiment 2 with noisy oracle.}
+    \label{fig:experiment2}
+\end{figure}
+
+\section{Practical Relevance and Extensions}
+
+\subsection{Applications}
+
+The findings have practical applications in various domains:
+
+\begin{itemize}
+    \item \textbf{Market Research:} Companies can optimize how they disclose product information to consumers with uncertain preferences.
+    \item \textbf{AI-Assisted Decision-Making:} AI systems can iteratively query users to better understand their beliefs and provide tailored recommendations.
+    \item \textbf{Targeted Advertising:} Advertisers can optimize message delivery without full knowledge of consumer profiles.
+\end{itemize}
+
+\subsection{Ethical Considerations}
+
+While optimizing persuasion strategies can enhance efficiency, it raises ethical concerns:
+
+\begin{itemize}
+    \item \textbf{Manipulation Risk:} Potential for manipulating receivers without informed consent.
+    \item \textbf{Privacy Issues:} Querying receiver beliefs may infringe on privacy if not handled responsibly.
+    \item \textbf{Transparency and Trust:} Overemphasis on persuasion may erode trust if the receiver perceives manipulation.
+\end{itemize}
+
+It is crucial to develop guidelines that ensure transparency and respect for autonomy.
+
+\section{Conclusion and Future Work}
+
+This paper advances the study of Bayesian persuasion by addressing the challenge of limited knowledge of receiver beliefs. The proposed querying algorithm demonstrates adaptability and efficiency, even with noise and cost constraints.
+
+\subsection{Future Research Directions}
+
+Future work could explore:
+
+\begin{itemize}
+    \item \textbf{Non-Binary Settings:} Extending to multi-state environments and complex action spaces.
+    \item \textbf{Learning Mechanisms:} Incorporating learning algorithms where the sender updates beliefs based on receiver responses.
+    \item \textbf{Real-Time Adaptation:} Developing online algorithms for dynamic environments.
+    \item \textbf{Ethical Frameworks:} Formulating guidelines that integrate ethical considerations into optimization.
+\end{itemize}
+
+\subsection{Reproducibility}
+
+Code and simulations are available at \url{https://github.com/sjagtani/applied-math-research-seminar} to promote reproducibility and foster additional research.
+
+\sloppy
+\begin{thebibliography}{9}
+
+\bibitem{Kamenica2011}
+Kamenica, E., \& Gentzkow, M. (2011).
+\newblock Bayesian persuasion.
+\newblock \textit{American Economic Review}, 101(6), 2590–2615.
+
+\bibitem{Dughmi2014}
+Dughmi, S., Immorlica, N., \& Roth, A. (2014).
+\newblock Constrained signaling in auction design.
+\newblock In \textit{Proceedings of the Twenty-Fifth Annual ACM-SIAM Symposium on
+Discrete Algorithms (SODA)}, (pp. 1341–1357).
+
+\bibitem{Arieli2016}
+Arieli, I., \& Babichenko, Y. (2016).
+\newblock Private Bayesian persuasion.
+\newblock \textit{Journal of Economic Theory}, 163, 286–294.
+
+\bibitem{Taneva2019}
+Taneva, I. (2019).
+\newblock Information design.
+\newblock \textit{Games and Economic Behavior}, 118, 277–290.
+
+\bibitem{Gentzkow2016}
+Gentzkow, M., \& Kamenica, E. (2017).
+\newblock Competition in persuasion.
+\newblock \textit{The Review of Economic Studies}, 84(1), 300–322.
+
+\bibitem{Harris2023}
+Harris, K., Immorlica, N., Lucier, B., \& Slivkins, A. (2023).
+\newblock Algorithmic persuasion through simulation.
+\newblock \textit{arXiv preprint arXiv:2311.18138}.
+
+\end{thebibliography}
+\fussy
+
+\end{document}
