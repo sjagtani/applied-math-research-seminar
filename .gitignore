@@ -1,0 +1,18 @@
+# Ignore system files
+.DS_Store
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+
+# Ignore LaTeX auxiliary files
+*.aux
+*.log
+*.toc
+*.out
+*.synctex.gz
+
+# Ignore specific folders
+Latex/
+Summary (test)/
+Learn Python/
