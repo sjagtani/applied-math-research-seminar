@@ -70,7 +70,7 @@ Oracle-Based Bayesian Persuasion}
 \maketitle
 
 \begin{abstract}
-This paper presents an empirical analysis of oracle-based Bayesian persuasion, implementing and extending the theoretical framework proposed by Harris et al. (2024). Conduct two computational experiments examining how different receiver belief distributions impact optimal messaging policies and sender utility. The first experiment validates the theoretical results with uniformly distributed receiver beliefs, while the second experiment explores the implications of polarized belief distributions. Through rigorous numerical simulations, demonstrate that polarized receiver populations can lead to higher sender utility (0.700 vs 0.600) and more balanced messaging policies. The findings provide empirical support for the theoretical framework while revealing new insights about the relationship between belief distribution characteristics and optimal persuasion strategies.
+This paper presents an empirical analysis of oracle-based Bayesian persuasion, implementing and extending the theoretical framework proposed by Harris et al. (2024) by running two computational experiments that examine how different receiver belief distributions impact optimal messaging policies and sender utility. The first experiment validates the theoretical results with uniformly distributed receiver beliefs, and the second experiment explores the implications of polarized belief distributions. Through rigorous numerical simulations, we are able to show that polarized receiver populations can lead to higher sender utility (0.700 vs 0.600). The findings provide empirical support for the theoretical framework while revealing new insights about the relationship between belief distribution characteristics and optimal persuasion strategies.
 \end{abstract}
 
 \section{Introduction}
@@ -79,7 +79,7 @@ Bayesian persuasion has emerged as a core concept for studying information desig
 This study makes three main contributions:
 \begin{enumerate}
     \item Provides an empirical implementation of the oracle-based Bayesian persuasion framework.
-    \item Demonstrates how different receiver belief distributions affect optimal messaging policies.
+    \item Demonstrates how different receiver belief distributions impact optimal messaging policies.
     \item Quantifies the relationship between population polarization and sender utility.
 \end{enumerate}
 
@@ -111,11 +111,11 @@ Following Proposition 4.1 of Harris et al., the optimal messaging policy given a
 \end{align*}
 
 \subsection{Implementation}
-To bridge the theoretical model with empirical analysis, implement a computational framework that follows the formal structure of Harris et al. (2024). This implementation builds upon their key theorems:
+To bridge the theoretical model with empirical analysis, we implement a computational framework that follows the formal structure of the original paper. This implementation builds upon their key theorems:
 
 \textbf{Theorem 4.3} (Adapted): Given $K \geq 1$ queries, the optimal adaptive querying policy $\pi^*$ can be computed in polynomial time and is equivalent to the optimal non-adaptive policy $\pi$ with at most $\min\{T, 2^K - 1\}$ queries.
 
-For the experimental implementation, design a simulation environment where:
+For the experimental implementation, we design a simulation environment where:
 \begin{itemize}
     \item Belief Space: $B = [0,1]$ representing $P(\omega=1|s)$
     \item Message Space: $M = \{m_0, m_1\}$
@@ -164,7 +164,7 @@ For any query $q = (\sigma, m)$, the response $a_q = 1$ if and only if:
 \subsection{Experiment 1: Uniform Belief Distribution}
 
 \subsubsection{Approach}
-For the first experiment, implemented three receiver types with beliefs distributed roughly uniformly across the probability space:
+For the first experiment, we implemented three receiver types with beliefs distributed roughly uniformly across the probability space:
 
 \begin{lstlisting}[language=Python, caption=Experiment 1 Setup]
 receivers = [
@@ -199,7 +199,7 @@ Results show the most effective ways to convey information:
 \subsection{Experiment 2: Polarized Belief Distribution}
 
 \subsubsection{Approach}
-For the second experiment, modified the receiver distribution to create polarization:
+For the second experiment, we modified the receiver distribution to create polarization:
 
 \begin{lstlisting}[language=Python, caption=Experiment 2 Setup]
 receivers = [
@@ -224,7 +224,7 @@ The optimal policy achieved:
 \end{align*}
 
 \subsubsection{Analysis}
-1. \textbf{Policy Structure:} Analysis of the experimental results indicates:
+1. \textbf{Policy Structure:} Analysis of the experimental results:
 \begin{itemize}
     \item \textbf{Message Distribution:} Experiment 2 exhibits near-symmetric probabilities (0.9/0.1) across states, in contrast to the asymmetric probabilities observed in Experiment 1 (0.8/0.2, 0.0/1.0). This suggests that polarized belief distributions lead to more balanced messaging strategies.
     
@@ -256,10 +256,10 @@ The improved utility can be decomposed into three components:
 
 \section{Theoretical Framework}
 
-Having demonstrated the empirical effectiveness of oracle-based Bayesian persuasion through our computational experiments, we now analyze the theoretical framework developed by Harris et al. (2024) to understand and explain these findings. This analysis serves three purposes: first, it provides strong evidence for the observed experimental results; second, it reveals fundamental structural properties of optimal messaging policies; and third, it establishes a theoretical foundation for understanding how belief distribution characteristics influence persuasion outcomes. The theoretical results both validate our experimental findings and suggest broader implications for information design in strategic settings.
+Having shown the empirical effectiveness of oracle-based Bayesian persuasion through our computational experiments, we now analyze the theoretical framework found in the original paper to understand and explain these findings. This analysis serves three purposes: first, it provides strong evidence for the observed experimental results; second, it reveals fundamental structural properties of optimal messaging policies; and third, it establishes a theoretical foundation for understanding how belief distribution characteristics influence persuasion outcomes. The theoretical results both validate our experimental findings and suggest broader implications for information design in strategic settings.
 
 \subsection{Foundational Results}
-The analysis establishes two fundamental theoretical results that characterize optimal messaging policies in the oracle-based Bayesian persuasion framework.
+The analysis establishes two fundamental theoretical results that characterize optimal messaging policies in oracle-based Bayesian persuasion.
 
 \begin{theorem}[Monotonicity Property]
 The optimal policy $P^*$ satisfies the following monotonicity property:
@@ -282,7 +282,7 @@ The result follows from the convexity of the value function and the binary natur
 \end{theorem}
 
 \subsection{Policy Structure}
-The theoretical analysis displays three fundamental structural properties that characterize optimal messaging policies in oracle-based Bayesian persuasion:
+The analysis also establishes three fundamental structural properties. These properties help explain the experimental results presented in Section 3, particularly highlighting how polarized populations lead to more balanced messaging strategies.
 
 \begin{itemize}
     \item \textbf{Threshold Property:} The optimal policy follows a threshold structure that cleanly separates messages based on state values:
@@ -301,22 +301,20 @@ The theoretical analysis displays three fundamental structural properties that c
     This balance ensures that the policy displays enough information to influence receiver behavior while preserving the sender's strategic advantages.
 \end{itemize}
 
-These properties help explain the experimental results in Section 3, especially why polarized populations lead to more balanced messaging strategies.
-
 \subsection{Connection to Experimental Results}
-The experimental findings provide strong validation of these theoretical results while revealing new insights about belief distribution effects. The key connections include:
+Our empirical findings provide strong validation of the theoretical results while revealing new insights about belief distribution effects. The key connections include:
 
 \begin{itemize}
-    \item \textbf{Monotonicity Validation:} Both experiments demonstrate the theoretical monotonicity property, with higher belief types showing stronger responses to message $m_1$. The response rates satisfy:
+    \item \textbf{Monotonicity Validation:} Both experiments show the theoretical monotonicity property, with higher belief types showing stronger responses to message $m_1$. The response rates satisfy:
     \[\mathbb{E}_{m\sim P^*(\cdot|\omega=1)} [a^*(m,p_{\text{high}})] > \mathbb{E}_{m\sim P^*(\cdot|\omega=1)} [a^*(m,p_{\text{low}})]\]
 
-    \item \textbf{Polarization Effects:} The enhanced utility observed with polarized populations (0.700 vs 0.600) suggests an extension to the theory: belief heterogeneity can improve sender utility despite lower mutual information content. This is evidenced by:
+    \item \textbf{Polarization Effects:} The increased utility observed with polarized populations (0.700 vs 0.600) suggests an extension to the theory: belief heterogeneity can improve sender utility despite lower mutual information content. This is evidenced by:
     \begin{align*}
         I(\omega;m)_{\text{polarized}} &= 0.532 < I(\omega;m)_{\text{uniform}} = 0.619 \\
         U_{\text{polarized}} &= 0.700 > U_{\text{uniform}} = 0.600
     \end{align*}
 
-    \item \textbf{Information-Theoretic Insights:} The KL-divergence analysis indicates more balanced information content in the polarized setting:
+    \item \textbf{Information-Theoretic Insights:} The KL-divergence analysis shows more balanced information content in the polarized setting:
     \[D_{\text{KL}}(P(\cdot|m_1)\|P(\cdot|s)) = D_{\text{KL}}(P(\cdot|m_0)\|P(\cdot|s)) = 0.382 \text{ bits}\]
     compared to varying values in the uniform case:
     \begin{align*}
@@ -325,9 +323,7 @@ The experimental findings provide strong validation of these theoretical results
     \end{align*}
 \end{itemize}
 
-These empirical findings validate the theoretical framework proposed by Harris et al.\ (2024) while suggesting important extensions regarding the role of belief distribution characteristics in optimal persuasion strategies.
-
-\pagebreak
+% \pagebreak
 \section{Data Visualization}
 
 \subsection{Visual Analysis}
@@ -337,7 +333,7 @@ The visualizations in Figures 1--3 showcase three key aspects of the experimenta
 \begin{itemize}
     \item \textbf{Receiver Type Distributions} (Figure 1): Displays the clear contrast between the uniform distribution in Experiment 1 and the polarized distribution in Experiment 2, with the latter having higher concentrations at the extremes.
     
-    \item \textbf{Messaging Policies} (Figure 2): Illustrates how the optimal policies differ between experiments. Experiment 1 shows more extreme message probabilities, leading to higher mutual information (0.619 bits), while Experiment 2 shows a more balanced approach (0.532 bits), particularly in state $\omega=1$. This balanced approach, although containing less information, proves more effective for polarized populations.
+    \item \textbf{Messaging Policies} (Figure 2): Illustrates how the optimal policies differ between experiments. Experiment 1 shows more extreme message probabilities, leading to higher mutual information (0.619 bits), while Experiment 2 shows a more balanced approach (0.532 bits), particularly in state $\omega=1$.
     
     \item \textbf{Utility Comparison} (Figure 3): Highlights the notable improvement in expected sender utility achieved with the polarized distribution (0.700 vs 0.600), representing a 16.7\% increase despite lower information content.
 \end{itemize}
@@ -469,27 +465,23 @@ The visualizations in Figures 1--3 showcase three key aspects of the experimenta
 \label{fig:utility-comparison}
 \end{figure}
 
-\section{Discussion}
-
-\subsection{Limitations}
+\section{Limitations}
 
 \begin{itemize}
-    \item \textbf{Binary Framework Limits Generalizability:} The analysis is restricted to binary choices, which may not capture the full complexity of real-world decision spaces. Many practical applications involve multiple states or continuous action spaces, which could present different optimal policy structures.
+    \item \textbf{Binary Framework Limits Generalizability:} The analysis is restricted to binary choices, which may not capture the full complexity of real-world decision spaces.
     
-    \item \textbf{Idealized Oracle Access and Its Implications:} The current model assumes perfect oracle responses, whereas real-world simulations or user studies would likely contain noise and inconsistencies. This idealization may overestimate the achievable utility in practical implementations.
+    \item \textbf{Idealized Oracle and Its Implications:} The current model assumes perfect oracle responses, whereas real-world simulations or user studies would likely contain noise and inconsistencies.
     
-    \item \textbf{Risk-Neutral Agents:} The model assumes receivers are risk-neutral in their decision-making. Real human behavior often exhibits risk aversion or other behavioral biases, which could significantly change the effectiveness of the derived messaging policies.
+    \item \textbf{Risk-Neutral Agents:} The model assumes receivers are risk-neutral in their decision-making. Real human behavior often exhibits risk aversion or other behavioral biases, which could significantly change the effectiveness of our messaging policies.
     
-    \item \textbf{Discrete Type Space:} The implementation discretizes the belief space into finite types, overlooking subtle belief patterns that exist in continuous spaces. This simplification may miss optimal policies that work better with more detailed belief patterns.
+    \item \textbf{Discrete Type Space:} The implementation discretizes the belief space into finite types, overlooking subtle belief patterns that exist in continuous spaces.
     
-    \item \textbf{Finite Message Space:} The restriction to two messages, while theoretically sufficient, may not capture the rich communication possibilities in real applications. Additional messages could potentially enable more sophisticated persuasion strategies.
+    \item \textbf{Finite Message Space:} The restriction to two messages, while theoretically sufficient, may not capture the rich communication possibilities in practical applications.
     
     \item \textbf{Optimization Traps: Local vs. Global Solutions:} The optimization approach may converge to local optima rather than global ones. The non-convex nature of the policy space means we cannot guarantee finding the absolute best messaging policy in all cases.
 \end{itemize}
 
 \section{Conclusion}
-
-The empirical analysis provides strong support for the oracle-based Bayesian persuasion framework while displaying new insights about belief distributions and optimal persuasion strategies. Key findings include:
 
 \begin{itemize}
     \item \textbf{Enhanced Utility with Polarized Beliefs:} Exhibited a notable improvement in sender utility (0.700 vs 0.600) when facing polarized populations. This counter-intuitive result suggests that belief heterogeneity can actually benefit information designers by enabling more targeted messaging strategies.
@@ -501,11 +493,11 @@ The empirical analysis provides strong support for the oracle-based Bayesian per
 
 \subsection{Future Research Directions}
 \begin{itemize}
-    \item \textbf{Extensions to Continuous Type Spaces:} Future work should explore continuous belief distributions and their impact on optimal policies. This would enable more realistic modeling of population beliefs and could reveal new structural properties of optimal policies.
+    \item \textbf{Extensions to Continuous Type Spaces:} Future work should explore continuous belief distributions and their impact on optimal policies. This would enable more realistic modeling of population beliefs and could reveal new structural properties.
     
-    \item \textbf{Dynamic Oracle Interactions:} Investigating settings where the sender can adaptively query the oracle based on previous responses would be valuable. This could lead to more efficient information gathering strategies and better messaging policies.
+    \item \textbf{Dynamic Oracle Interactions:} Investigating settings where the sender can adaptively query the oracle based on previous responses would be valuable and could lead to more efficient information gathering strategies.
     
-    \item \textbf{Multi-Agent Settings:} Extending the framework to scenarios with multiple receivers or competing senders would better reflect real-world applications. This could uncover interesting strategic interactions and new forms of optimal policies.
+    \item \textbf{Multi-Agent Settings:} Extending the framework to scenarios with multiple receivers or competing senders would better reflect real-world applications, while uncovering interesting strategic interactions.
     
     \item \textbf{Approximate Oracle Models:} Developing frameworks for dealing with noisy or biased oracle responses would increase practical applicability. This could include robust optimization approaches and methods for measuring ambiguity in oracle responses.
 \end{itemize}
