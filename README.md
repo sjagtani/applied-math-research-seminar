@@ -7,4 +7,4 @@ This paper presents an **empirical analysis of oracle-based Bayesian persuasion*
 
 Through rigorous numerical simulations, my findings provide empirical support for the theoretical framework while uncovering new insights into the relationship between belief distribution characteristics and optimal persuasion strategies.
 
-📄 **Latest Version:** See [`Report/summary_v4`](Report/summary_v4) for the latest version (Dec 2024).
+📄 **Latest Version:** See [`Report/summary_v4`]([Report/summary_v4](https://github.com/sjagtani/applied-math-research-seminar/blob/main/report/summary_v4.pdf)) for the latest version (Dec 2024).
